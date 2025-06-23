@@ -1,0 +1,96 @@
+HELMHOLTZ EOS FOR WHITE DWARF MODELING WITH XNS
+===============================================
+
+Background:
+-----------
+This directory contains the Helmholtz equation of state code adapted for 
+generating white dwarf EOS tables compatible with the XNS neutron star code.
+The Helmholtz EOS provides a realistic treatment of stellar matter including
+electron degeneracy effects, Coulomb corrections, and radiation pressure,
+making it suitable for white dwarf interior modeling.
+
+Purpose:
+--------
+The main goal is to generate realistic white dwarf EOS tables that can be
+used with the XNS code to compute white dwarf structure and verify the 
+stellar structure solver against known white dwarf models.
+
+Usage for White Dwarf EOS Generation:
+-------------------------------------
+The Makefile provides several convenient targets for building and using the Helmholtz EOS:
+
+1. Complete workflow (recommended):
+   make resample
+   
+   This will:
+   - Compile the Helmholtz library and EOS generator
+   - Generate wd_eos_helmholtz.dat with relativistic enthalpy
+   - Convert to XNS format using resample_helmholtz.py
+   - Create the final XNS-compatible resampled table
+
+2. Individual steps:
+   make eos         # Generate raw EOS table only
+   make all         # Compile executables only
+   make clean       # Remove build files
+   make clean-all   # Remove all generated files
+   make help        # Show all available options
+
+3. Manual compilation (if needed):
+   gfortran helmholtz_wrapper.f90 helmholtz_library.F90 generate_wd_eos.f90 -o generate_wd_eos
+
+The generated 'wd_eos_helmholtz.dat' has format:
+density[g/cm^3]  pressure[dyn/cm^2]  spec_energy[erg/g]  spec_enthalpy[erg/g]
+
+The resampling process:
+- Reads the 4-column CGS table (density, pressure, energy, enthalpy)
+- Converts CGS units to geometrized units  
+- Uses direct enthalpy calculation (no problematic numerical integration)
+- Generates XNS-compatible resampled table with relativistic enthalpy
+
+4. Configure XNS for white dwarf:
+   - Set EOSINT = .TRUE. and FILEEOS = 'wd_eos_resampled.dat'
+   - Use appropriate white dwarf central density (typically 10^6-10^7 g/cm^3)
+   - Convert CGS density using: RHOINI = rho_cgs / RHO_CGS_TO_GEOM
+
+EOS Parameters:
+---------------
+Default settings in generate_wd_eos.f90:
+- Composition: 50/50 C/O mixture (abar=13.7, zbar=6.9)
+- Temperature: 10^7 K
+- Density range: 1 to 10^10 g/cm^3 (1000 points, log-spaced)
+
+Alternative compositions (modify ionmax and arrays as needed):
+- Pure helium: aion=4, zion=2
+- Pure carbon: aion=12, zion=6
+- Pure oxygen: aion=16, zion=8  
+
+Enthalpy Calculation:
+--------------------
+The helm_wrapper now computes relativistic specific enthalpy:
+- h_relativistic = e_specific + p/ρ + c²
+- Includes rest mass energy contribution (c² ≈ 9.0 × 10²⁰ erg/g)
+- Required for proper relativistic treatment in XNS stellar structure equations
+
+XNS Format Structure:
+---------------------
+Line 1:        1000                         # number of points
+Line 2:                                     # blank
+Line 3:        log10(rho_min) log10(rho_max)
+Line 4:        log10(p_min) log10(p_max) Gamma_p_min Gamma_p_max
+Line 5:        log10(e_min) log10(e_max) Gamma_e_min Gamma_e_max
+Line 6:        log10(ln(h_min)) log10(ln(h_max)) Gamma_h_min Gamma_h_max
+Line 7:                                     # blank
+
+Block 1: 1000 lines of 7 columns:
+    log10(rho), log10(p), log10(e), log10(ln h), Gamma_p, Gamma_e, Gamma_h
+
+(blank line)
+
+Block 2: 1000 lines of 3 columns:
+    log10(p), log10(rho), Gamma_{rho-p} = d log10(rho) / d log10(p)
+
+(blank line)
+
+Block 3: 1000 lines of 3 columns:
+    log10(ln h), log10(rho), Gamma_{rho-h} = d log10(rho) / d log10(ln h)
+

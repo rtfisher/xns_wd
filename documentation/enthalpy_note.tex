@@ -1,0 +1,114 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{siunitx}
+
+\title{Critical Temperature for Ideal Gas and Radiation Pressure Balance in Pseudo-Enthalpy Formalism}
+\author{Robert Fisher}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Overview}
+
+In some formulations of rotating relativistic stellar structure equations, it is convenient to define a ``pseudo-enthalpy'' or ``log enthalpy'' function. For this expression to be analytically evaluated, we must ensure that the enthalpy $h$ vanishes at zero pressure:
+
+\begin{equation}
+    h(P = 0) = 0.
+\end{equation}
+
+If the gas is in local thermodynamic equilibrium (LTE), such that the radiation and matter temperatures are equal, and if isothermal conditions are assumed, then radiation pressure contributes a to the total enthalpy increasingly at low densities. For the pseudo-enthalpy integra to be well-behaved and finite, the gas pressure must dominate near the surface, ensuring that $h(P = 0) = 0$ is satisfied.
+
+This leads to a \emph{critical minimum temperature}, denoted \( T_{\min} \), below which gas pressure dominates over radiation pressure in the specific enthalpy. Above this threshold, radiation dominates and the pseudo-enthalpy becomes singular at the surface.
+
+\section*{Gas and Radiation Contributions to Specific Enthalpy}
+
+The total specific enthalpy is defined as
+\begin{equation}
+    h = \frac{e + P}{\rho},
+\end{equation}
+where \( e \) is the internal energy density and \( P \) is pressure.
+
+\subsection*{Ideal Gas}
+
+For a fully ionized monatomic ideal gas, the internal energy and pressure are:
+\begin{align}
+    e_{\text{gas}} &= \frac{3}{2} \frac{\rho}{\mu m_u} k_B T, \\
+    P_{\text{gas}} &= \frac{\rho}{\mu m_u} k_B T.
+\end{align}
+Therefore,
+\begin{equation}
+    h_{\text{gas}} = \frac{e_{\text{gas}} + P_{\text{gas}}}{\rho} 
+    = \left( \frac{3}{2} + 1 \right) \frac{k_B T}{\mu m_u}
+    = \frac{5}{2} \cdot \frac{k_B T}{\mu m_u}.
+\end{equation}
+
+\subsection*{Radiation}
+
+Radiation energy and pressure are:
+\begin{align}
+    e_{\text{rad}} &= a T^4, \\
+    P_{\text{rad}} &= \frac{1}{3} a T^4.
+\end{align}
+So the specific enthalpy from radiation is:
+\begin{equation}
+    h_{\text{rad}} = \frac{e_{\text{rad}} + P_{\text{rad}}}{\rho} 
+    = \frac{4}{3} \cdot \frac{a T^4}{\rho}.
+\end{equation}
+
+\section*{Derivation of the Minimum Temperature \( T_{\min} \)}
+
+We define \( T_{\min} \) as the temperature at which the gas and radiation contributions to specific enthalpy are equal:
+\begin{equation}
+    h_{\text{gas}} = h_{\text{rad}}.
+\end{equation}
+
+Setting the two expressions equal:
+\begin{align}
+    \frac{5}{2} \cdot \frac{k_B T_{\min}}{\mu m_u} &= \frac{4}{3} \cdot \frac{a T_{\min}^4}{\rho}, \\
+    \Rightarrow T_{\min}^3 &= \left( \frac{15}{8} \cdot \frac{k_B \rho}{a \mu m_u} \right), \\
+    \Rightarrow T_{\min} &= \left( \frac{15}{8} \cdot \frac{k_B \rho}{a \mu m_u} \right)^{1/3}.
+\end{align}
+
+\section*{Evaluation for 50/50 C/O at \( \rho = 1 \, \text{g/cm}^3 \)}
+
+For a 50/50 mixture by mass of fully ionized $^{12}$C and $^{16}$O:
+\begin{align}
+    \frac{1}{\mu} &= 0.5 \cdot \frac{Z_C + 1}{A_C} + 0.5 \cdot \frac{Z_O + 1}{A_O}
+    = 0.5 \cdot \frac{7}{12} + 0.5 \cdot \frac{9}{16}
+    = \frac{494}{768}, \\
+    \Rightarrow \mu &\approx 1.555.
+\end{align}
+
+Constants:
+\begin{align*}
+    k_B &= 1.3807 \times 10^{-16} \, \text{erg/K}, \\
+    m_u &= 1.6605 \times 10^{-24} \, \text{g}, \\
+    a   &= 7.5657 \times 10^{-15} \, \text{erg/cm}^3/\text{K}^4, \\
+    \rho &= 1 \, \text{g/cm}^3.
+\end{align*}
+
+Now plug into the expression for \( T_{\min} \):
+\begin{align}
+    T_{\min} &= \left( \frac{15}{8} \cdot \frac{k_B \rho}{a \mu m_u} \right)^{1/3}, \\
+    &= \left( \frac{15}{8} \cdot \frac{1.3807 \times 10^{-16}}{7.5657 \times 10^{-15} \cdot 1.555 \cdot 1.6605 \times 10^{-24}} \right)^{1/3}, \\
+    &= \left( \frac{2.589 \times 10^{-16}}{1.951 \times 10^{-38}} \right)^{1/3}
+    \approx \left( 1.327 \times 10^{22} \right)^{1/3}, \\
+    \Rightarrow T_{\min} &\approx \boxed{1.08 \times 10^7 \, \text{K}}.
+\end{align}
+
+\section*{Conclusion}
+
+To maintain the validity of an analytic pseudo-enthalpy solution where \( h \to 0 \) as \( P \to 0 \), the temperature must remain below a critical threshold where gas pressure dominates over radiation pressure. For a gas of fully ionized 50/50 carbon-oxygen at \( \rho = 1 \, \text{g/cm}^3 \), the minimum allowable temperature is:
+
+\[
+\boxed{T_{\min} \approx 1.08 \times 10^7 \, \text{K}}.
+\]
+
+Above this temperature, radiation dominates the pressure and enthalpy, violating the assumption that gas pressure governs the low-pressure behavior.
+
+\end{document}
+

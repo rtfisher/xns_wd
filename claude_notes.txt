@@ -1,0 +1,135 @@
+  For your CGS table, you need to:
+
+  Replace the file reading section (lines 57-79) with:
+
+  # Read your CGS table directly
+  # Assuming columns: density [g/cm³], pressure [dyn/cm²], internal_energy 
+  [erg/cm³]
+  data = np.loadtxt('your_cgs_table.dat')
+  density_cgs = data[:,0]  # g/cm³
+  pressure_cgs = data[:,1] # dyn/cm²  
+  energy_cgs = data[:,2]   # erg/cm³
+
+  # Convert directly to geometrized units (skip COMPOSE conversion)
+  density = density_cgs / rhounit
+  pressure = pressure_cgs / punit
+  energy = energy_cgs / punit
+
+  Keep everything else the same - the CGS constants and geometrized
+  conversion factors are already correct.
+
+  So yes, the constants are already in CGS, you just need to bypass the 
+  COMPOSE format reading and read your CGS table directly.
+
+> What is energy_cgs here? Specific internal energy or something else?
+
+⏺ Looking at the resample.py code more carefully, energy_cgs should be the
+  specific internal energy density in erg/cm³.
+
+  Key distinction:
+
+  - Specific internal energy (ε): Energy per unit mass [erg/g]
+  - Internal energy density (ρε): Energy per unit volume [erg/cm³]
+
+  In the COMPOSE conversion (lines 78-79):
+  # Internal & total energy density (beware that COMPOSE gives in column 9 
+  : e_tot-1)
+  energy = ((1.+np.array(data3))*np.array(data1)*eint2ergcm3-np.array(data1
+  )*nb2rho*c**2)/punit
+  energyt = ((1.+np.array(data3))*np.array(data1)*eint2ergcm3)/punit
+
+  This shows:
+  - data3 = (total energy per baryon - 1) from COMPOSE
+  - (1.+data3)*data1*eint2ergcm3 = total energy density [erg/cm³]
+  - data1*nb2rho*c² = rest mass energy density [erg/cm³]
+  - energy = internal energy density = total - rest mass [erg/cm³]
+
+  For your CGS table:
+
+  If you have specific internal energy ε [erg/g], convert to energy
+  density:
+  specific_internal_energy = data[:,2]  # erg/g
+  energy_cgs = density_cgs * specific_internal_energy  # erg/cm³
+
+  If you already have internal energy density [erg/cm³]:
+  energy_cgs = data[:,2]  # erg/cm³ (already energy density)
+
+  Most EOS tables provide specific internal energy (per unit mass), so
+  you'll likely need the first conversion.
+
+> How do I run the code?
+
+⏺ To run the XNS code, you have several steps:
+
+  1. Compile the code
+
+⏺ Read(makefile)…
+  ⎿  Read 78 lines (ctrl+r to expand)
+
+⏺ Compile the code:
+  make serial
+
+  This creates the executable XNS-s.
+
+  2. Set up your EOS file
+
+⏺ Search(pattern: "FILEEOS.*=", include: "*.f90")…
+  ⎿  Found 16 files (ctrl+r to expand)
+
+⏺ You need an EOS file. Edit SYSTEMXNS.f90:90 to set the filename:
+  CHARACTER(LEN=30) :: FILEEOS = 'your_eos_resampled.dat'
+
+  And set:
+  LOGICAL :: EOSINT = .TRUE.  ! Use tabulated EOS
+
+  3. Configure parameters
+
+  Key parameters in SYSTEMXNS.f90:
+
+  ! Central density
+  REAL,PARAMETER :: RHOINI = 1.366e-3  ! In geometrized units
+
+  ! Theory choice  
+  LOGICAL :: GR = .TRUE.  ! .TRUE. = General Relativity, .FALSE. = 
+  Scalar-Tensor
+
+  ! Grid parameters
+  INTEGER,PARAMETER :: NR = 900    ! Radial points
+  INTEGER,PARAMETER :: NTH = 100   ! Angular points (1 = spherical)
+
+  ! Physics options
+  LOGICAL :: IMAG = .FALSE.        ! Magnetic fields
+  REAL :: OMG = 0.00              ! Rotation rate
+
+  INTEGER,PARAMETER :: MLS = 0 ! Spherical geometry (0 = 1D)
+  INTEGER, PARAMETER :: NGQ = 1 ! Spherical geometry (1 = 1D)
+
+  4. Run the code
+
+  ./XNS-s
+
+  Output files:
+  - LogFile.dat - Summary of stellar properties
+  - Hydroeq.dat - Radial profiles
+  - Grid.dat - Grid information
+  - Surf.dat - Surface data
+
+  5. Example run
+
+⏺ List(.)…
+  ⎿  Listed 189 paths (ctrl+r to expand)
+
+⏺ The code is already compiled! You can see:
+  - Executable: XNS-s
+  - EOS file: APR_resampled.dat is available
+  - Output files: LogFile.dat, Hydroeq.dat, etc. already exist from a
+  previous run
+
+  Quick test run:
+  ./XNS-s
+
+  For your own EOS:
+  1. Use resample.py to create your_eos_resampled.dat
+  2. Edit SYSTEMXNS.f90 to set FILEEOS = 'your_eos_resampled.dat'
+  3. Recompile: make serial
+  4. Run: ./XNS-s
