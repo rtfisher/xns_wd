@@ -171,17 +171,17 @@ SUBROUTINE TOVINIMOD(RHOVAR)
            RHOTV(I+1)=RHOX
            ETV(I+1)=EX
 
-           print *, 'DEBUG radius (km), pressure, density, total energy (CGS): ', r (i + 1) * LENGTH_GEOM_TO_CGS/1.e5, &
-                   ' ', Y(3) * PRESS_GEOM_TO_CGS, ' ', RHOX * RHO_CGS_TO_GEOM, ' ',&
-           EX * RHO_CGS_TO_GEOM
+!           print *, 'DEBUG radius (km), pressure, density, total energy (CGS): ', r (i + 1) * LENGTH_GEOM_TO_CGS/1.e5, &
+!                   ' ', Y(3) * PRESS_GEOM_TO_CGS, ' ', RHOX * RHO_CGS_TO_GEOM, ' ',&
+!           EX * RHO_CGS_TO_GEOM
 !           print *, 'DEBUG RHOX, RHOSURFTOV (CGS) = ', RHOX * RHO_CGS_TO_GEOM, RHOSURFTOV * RHO_CGS_TO_GEOM
 
-           print *, 'i = ', i
+!           print *, 'i = ', i
 
-           if (Y (3) /= Y (3) ) then
-             print *, 'Pressure NaN'
-             exit 
-           end if
+!           if (Y (3) /= Y (3) ) then
+!             print *, 'Pressure NaN'
+!             exit 
+!           end if
 
            ! Check if density below limit for stellar surface condition, if so set stellar surface radius
            IF(RHOX .GT. RHOSURFTOV)THEN
