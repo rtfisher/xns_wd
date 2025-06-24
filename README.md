@@ -157,3 +157,81 @@ Find sample configurations under `documentation/examples/` including:
 - General Relativity and Scalar-Tensor cases
 - Rotating and non-rotating models
 - Magnetic and non-magnetic setups
+
+###  Rotation and Breakup Angular Velocity
+
+In geometrized units where `G = c = M_sun = 1`, angular velocity `Ω` has units of inverse length.
+
+#### Converting Angular Velocity (rad/s → geometrized units)
+
+To convert angular velocity from CGS units (`rad/s`) to geometrized units:
+
+```
+Ω_geom = Ω_CGS × (G * M_sun) / c^3
+```
+
+With physical constants:
+- `G = 6.67430e-8 cm^3 g^-1 s^-2`
+- `M_sun = 1.9885e33 g`
+- `c = 2.99792458e10 cm/s`
+
+This gives:
+
+```
+(G * M_sun) / c^3 ≈ 4.9255e-6 seconds
+```
+
+So:
+
+```
+Ω_geom ≈ Ω_CGS × 4.9255e-6
+```
+
+Example:
+If `Ω_CGS = 4.82 rad/s`, then:
+
+```
+Ω_geom ≈ 2.37e-5
+```
+
+---
+
+###  Breakup Angular Velocity
+
+The breakup angular velocity (i.e., the fastest a star can rotate without shedding mass) is given by:
+
+**In CGS:**
+
+```
+Ω_breakup = sqrt(G * M / R^3)
+```
+
+Where:
+- `M` is the stellar mass (e.g., `1.4 M_sun`)
+- `R` is the radius (e.g., `2000 km = 2e8 cm`)
+
+Example for a near-Chandrasekhar mass white dwarf:
+
+```
+Ω_breakup ≈ 4.82 rad/s
+```
+
+**In geometrized units:**
+
+If using geometrized mass and radius (with `G = c = 1`):
+
+```
+Ω_breakup = sqrt(M / R^3)
+```
+
+Or convert the CGS result using the same factor:
+
+```
+Ω_breakup_geom = Ω_breakup_CGS × 4.9255e-6
+```
+
+For `Ω_CGS ≈ 4.82`, we get:
+
+```
+Ω_geom ≈ 2.37e-5
+```
