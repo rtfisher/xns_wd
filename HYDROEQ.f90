@@ -1109,7 +1109,7 @@ SUBROUTINE QUANTITIES(RHOCENT,RHOVAR,MM,M0,ILOOP)
     WRITE(6,*)''
     WRITE(6,*)'===================== STELLAR QUANTITIES ====================='
     WRITE(6,*)''
-    WRITE(6,*)'Central density (J)','  ',RHOCENT/MBARYONFC  ! Computed on grid = RNEWT (not to be confused with RHOCENT in HYDROEQ)
+    WRITE(6,*)'Central density (J)','  ',RHOCENT/MBARYONFC, '; rho9 = =', RHOCENT*RHO_CGS_TO_GEOM/1.e9, ' g/cm^3'  ! Computed on grid = RNEWT (not to be confused with RHOCENT in HYDROEQ)
     WRITE(6,*)'Gravit. mass (E)   ','  ',MM
     WRITE(6,*)'Rest    mass       ','  ',M0
     WRITE(6,*)'Proper  mass (E)   ','  ',MP

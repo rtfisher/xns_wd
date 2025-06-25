@@ -1,0 +1,42 @@
+(*) There are pressure floors hardwired in SUBBROUTINE PRS2EOS(PRS,RHO) in
+    PHYSICS.f90, as well as SUBROUTINE EOS(P,RHO,ENE,CHIS) in that same
+    file. These are currently set to P = 1.e-28 in geometrized units, 
+    about 5.5e11 dyn/cm^2 in CGS -- less than 1 g/cm^3 in density for
+    cold Helmholtz.
+
+   It would be good to make these more readily defined, perhaps as preprocessor
+   variables.
+
+(*) The surface is defined in RHOSURFTOV, PSURFTOV for the TOV solver, and
+    RHOSURF and PSURF for the hydro solver. These are also hardwired and
+    may not be equal.
+
+   These values too should be added as preprocessed variables, perhaps
+   with a logical check to ensure they exceed the pressure/density 
+   floor of the EOS routines.
+
+
+Note on Geometrized Units
+=========================
+XNS uses geometrized units, where the speed of light c = 1, the gravitational constant G = 1, and the mass of the Sun M_sun = 1. This means that all units can efectively be expressed in terms of length.
+
+Length
+------
+L = G M_sun / c^2 = 1.48 km = 1.48 x 10^5 cm
+
+Time
+----
+T = L / c = G M_sun / c^3 = 4.93 x 10^-6 s
+
+Mass
+----
+Solar masses (M_sun)
+
+Mass Density
+------------
+rho = M_sun / L^3 = c^6 / (G^3 M_sun^2) = 6.16 x 10^17 g/cm^3
+
+Pressure
+--------
+P = rho * c**2 = c^8 / (G^3 M_sun^2) = 5.55 x 10^38 dyn/cm^2
+

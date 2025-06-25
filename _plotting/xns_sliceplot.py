@@ -105,7 +105,7 @@ ax.set_theta_direction(-1)
 ax.set_thetamin(0)
 ax.set_thetamax(180)
 
-c = ax.pcolormesh(Theta, Radius, plot_data, cmap='viridis', shading='auto')
+c = ax.pcolormesh(Theta, Radius, plot_data, cmap='seismic', shading='auto')
 cbar = fig.colorbar(c, ax=ax, pad=0.1)
 cbar.set_label(colorbar_label)
 

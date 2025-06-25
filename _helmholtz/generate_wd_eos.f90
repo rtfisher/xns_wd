@@ -23,7 +23,7 @@
       zbar   = abar * sum(xmass(1:ionmax) * zion(1:ionmax)/aion(1:ionmax))
 
 ! Set temperature (white dwarfs are typically cooler)
-      temp = 1.0d4  ! 10^4 K (adjust as needed for your WD model)
+      temp = 1.0d7  ! 10^4 K (adjust as needed for your WD model)
 
 ! Density range for white dwarf
       rho_min = 1.0d0   ! g/cm^3 (surface)

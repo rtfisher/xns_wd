@@ -246,7 +246,7 @@ END SUBROUTINE FUNCD_STRETCH
     REAL :: RHOLOG,PRSLOG
 
 !RTF: Remove hardwired floor
-    PRS = MAX(PRS,1.E-24)
+    PRS = MAX(PRS,1.E-28)
     PRSLOG = LOG10(PRS)
     IL = INT((PRSLOG-PRSTABMIN)/(PRSTABMAX-PRSTABMIN)*(NPTRHO-1))
     IF(IL .GE. 0 .AND. IL .LE. 999)THEN
@@ -314,7 +314,7 @@ END SUBROUTINE FUNCD_STRETCH
 
 !RTF: Remove hardwired pressure floor.
 
-    IF(P .GT. 1.D-24)THEN
+    IF(P .GT. 1.D-28)THEN
        IF(EOSJOR)THEN ! Jordan frame EoS
           IF(EOSINT)THEN
              CALL PRS2EOS(P,RHO)
@@ -337,11 +337,11 @@ END SUBROUTINE FUNCD_STRETCH
           END IF
         END IF
        ELSE
-          P   = 1.D-24
-          RHO = 1.D-18
+          P   = 1.D-28
+          RHO = 1.D-22
 !	  CALL PRS2EOS(P,RHO)
 !          RHO = (P/K1)**(1./GAMMA)*A**((4.*GAMMA-4.)/GAMMA)
-          ENE  = 1.D-24
+          ENE  = 1.D-28
        END IF
 
 

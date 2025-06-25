@@ -3,9 +3,9 @@ FC    = gfortran
 MPIFC = mpif90
 
 #compiler flags
-CFLAGS    =  -cpp -Ofast -m64 -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -finit-local-zero
+CFLAGS    =  -cpp -Ofast -m64 -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -finit-local-zero -fallow-argument-mismatch 
 
-DEBFLAGS = -g -cpp -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fimplicit-none  -Wall -Wextra -Wno-tabs -Wline-truncation  -Wcharacter-truncation  -Wsurprising  -Waliasing  -Wimplicit-interface  -Wunused-parameter  -fwhole-file  -fcheck=all -fbacktrace
+DEBFLAGS = -g -cpp -fdefault-real-8 -fdefault-double-8 -fdefault-integer-8 -fimplicit-none  -Wall -Wextra -Wno-tabs -Wline-truncation  -Wcharacter-truncation  -Wsurprising  -Waliasing  -Wimplicit-interface  -Wunused-parameter  -fwhole-file  -fcheck=all -fbacktrace -fallow-argument-mismatch 
 
 parspace: FC=$(MPIFC)
 
