@@ -5,9 +5,10 @@ Script: parse_logfiles_and_plot.py
 
 This script parses XNS output log files to extract angular velocity (OMG) and 
 angular momentum values, converts them from geometric units (G=c=Msun=1) to 
-CGS units, and creates a clean plot of angular velocity vs angular momentum.
+CGS units, and creates a clean log-log plot of angular velocity vs angular momentum.
 
 The script looks for files matching "LogFile_*.dat" in the current directory.
+Non-rotating models (omega = 0) are excluded from the log-log plot.
 """
 
 import os
@@ -100,6 +101,7 @@ def main():
     # Parse all files
     models = []
     failed_files = []
+    zero_omega_models = []
     
     for filepath in logfiles:
         omega_geom, L_geom = parse_logfile(filepath)
@@ -109,20 +111,31 @@ def main():
             omega_cgs = omega_geom * OMEGA_GEOM_TO_CGS
             L_cgs = L_geom * L_GEOM_TO_CGS
             
-            models.append(ModelData(
+            model = ModelData(
                 filename=filepath.name,
                 omega_geom=omega_geom,
                 L_geom=L_geom,
                 omega_cgs=omega_cgs,
                 L_cgs=L_cgs
-            ))
+            )
             
-            print(f"{filepath.name}:")
-            print(f"  OMG (geom) = {omega_geom:.6e}")
-            print(f"  L (geom)   = {L_geom:.6e}")
-            print(f"  OMG (CGS)  = {omega_cgs:.6e} s⁻¹")
-            print(f"  L (CGS)    = {L_cgs:.6e} g⋅cm²⋅s⁻¹")
-            print()
+            # Check if this is a non-rotating model (omega ≈ 0)
+            if abs(omega_cgs) < 1e-10:
+                zero_omega_models.append(model)
+                print(f"{filepath.name}: (NON-ROTATING - excluded from log plot)")
+                print(f"  OMG (geom) = {omega_geom:.6e}")
+                print(f"  L (geom)   = {L_geom:.6e}")
+                print(f"  OMG (CGS)  = {omega_cgs:.6e} s⁻¹")
+                print(f"  L (CGS)    = {L_cgs:.6e} g⋅cm²⋅s⁻¹")
+                print()
+            else:
+                models.append(model)
+                print(f"{filepath.name}:")
+                print(f"  OMG (geom) = {omega_geom:.6e}")
+                print(f"  L (geom)   = {L_geom:.6e}")
+                print(f"  OMG (CGS)  = {omega_cgs:.6e} s⁻¹")
+                print(f"  L (CGS)    = {L_cgs:.6e} g⋅cm²⋅s⁻¹")
+                print()
         else:
             failed_files.append(filepath.name)
             print(f"Failed to parse {filepath.name}")
@@ -130,40 +143,65 @@ def main():
     if failed_files:
         print(f"Failed to parse {len(failed_files)} files: {failed_files}")
         
+    if zero_omega_models:
+        print(f"Excluded {len(zero_omega_models)} non-rotating models from log-log plot")
+        
     if not models:
-        print("No valid data found!")
+        print("No rotating models found for log-log plot!")
         return
     
-    print(f"Successfully parsed {len(models)} models")
+    print(f"Successfully parsed {len(models)} rotating models for plotting")
     
     # Sort models by angular momentum for clean plotting
     models.sort(key=lambda x: x.L_cgs)
     
-    # Extract data for plotting
+    # Extract data for plotting (only rotating models)
     omega_cgs_values = [m.omega_cgs for m in models]
     L_cgs_values = [m.L_cgs for m in models]
-    
-    # Create the plot
+
+# Get mass from any log file for the title
+    sample_mass = None
+    for logfile in logfiles:
+        try:
+            with open(logfile, 'r') as f:
+                for line in f:
+                    if "REST    MASS" in line:
+                        val = line.split("=")[-1].strip()
+                        if "NaN" not in val:
+                            sample_mass = float(val)
+                            break
+            if sample_mass is not None:
+                break
+        except:
+            continue
+
+    # Create the log-log plot
     plt.figure(figsize=(10, 7))
     
-    # Main plot
-    plt.plot(L_cgs_values, omega_cgs_values, 'bo-', linewidth=2, markersize=6, 
-             markerfacecolor='lightblue', markeredgecolor='blue', markeredgewidth=1)
+    # Main log-log plot
+    plt.loglog(L_cgs_values, omega_cgs_values, 'bo-', linewidth=2, markersize=6, 
+               markerfacecolor='lightblue', markeredgecolor='blue', markeredgewidth=1)
     
     # Formatting
     plt.xlabel('Angular Momentum [g⋅cm²⋅s⁻¹]', fontsize=12, fontweight='bold')
     plt.ylabel('Angular Velocity [s⁻¹]', fontsize=12, fontweight='bold')
-    plt.title('Angular Velocity vs Angular Momentum\nRotating White Dwarf Models', 
-              fontsize=14, fontweight='bold', pad=20)
-    
-    # Use scientific notation for axes
-    plt.ticklabel_format(style='scientific', axis='both', scilimits=(0,0))
-    
-    # Grid
-    plt.grid(True, alpha=0.3, linestyle='--')
+
+# Create title with mass if available
+    title_text = 'Angular Velocity vs Angular Momentum (Log-Log Scale)\nRotating White Dwarf Models'
+    if sample_mass is not None:
+        title_text += f'\nMass = {sample_mass:.3f} M☉'
+
+    plt.title(title_text, fontsize=14, fontweight='bold', pad=20)
+
+    # Grid for log-log plot
+    plt.grid(True, alpha=0.3, linestyle='--', which='both')
     
     # Add annotation with number of models
-    plt.text(0.02, 0.98, f'N = {len(models)} models', 
+    info_text = f'N = {len(models)} rotating models'
+    if zero_omega_models:
+        info_text += f'\n({len(zero_omega_models)} non-rotating excluded)'
+    
+    plt.text(0.02, 0.98, info_text, 
              transform=plt.gca().transAxes, fontsize=10,
              verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
     
@@ -180,10 +218,10 @@ def main():
     plt.tight_layout()
     
     # Save the plot
-    plt.savefig('angular_velocity_vs_momentum.png', dpi=300, bbox_inches='tight')
-    plt.savefig('angular_velocity_vs_momentum.pdf', bbox_inches='tight')
+    plt.savefig('angular_velocity_vs_momentum_loglog.png', dpi=300, bbox_inches='tight')
+    plt.savefig('angular_velocity_vs_momentum_loglog.pdf', bbox_inches='tight')
     
-    print(f"\nPlot saved as 'angular_velocity_vs_momentum.png' and '.pdf'")
+    print(f"\nLog-log plot saved as 'angular_velocity_vs_momentum_loglog.png' and '.pdf'")
     
     # Show the plot
     plt.show()
@@ -192,14 +230,20 @@ def main():
     print("\n" + "="*50)
     print("SUMMARY STATISTICS")
     print("="*50)
-    print(f"Number of models: {len(models)}")
-    print(f"Angular velocity range: {min(omega_cgs_values):.3e} to {max(omega_cgs_values):.3e} s⁻¹")
-    print(f"Angular momentum range: {min(L_cgs_values):.3e} to {max(L_cgs_values):.3e} g⋅cm²⋅s⁻¹")
-    
-    # Check if omega=0 case exists
-    zero_omega_models = [m for m in models if abs(m.omega_cgs) < 1e-10]
+    print(f"Total models parsed: {len(models) + len(zero_omega_models)}")
+    print(f"Rotating models plotted: {len(models)}")
     if zero_omega_models:
-        print(f"Non-rotating model (ω≈0): L = {zero_omega_models[0].L_cgs:.3e} g⋅cm²⋅s⁻¹")
+        print(f"Non-rotating models (excluded): {len(zero_omega_models)}")
+    
+    if models:
+        print(f"Angular velocity range: {min(omega_cgs_values):.3e} to {max(omega_cgs_values):.3e} s⁻¹")
+        print(f"Angular momentum range: {min(L_cgs_values):.3e} to {max(L_cgs_values):.3e} g⋅cm²⋅s⁻¹")
+    
+    # List non-rotating models if any
+    if zero_omega_models:
+        print(f"\nNon-rotating models:")
+        for model in zero_omega_models:
+            print(f"  {model.filename}: L = {model.L_cgs:.3e} g⋅cm²⋅s⁻¹")
 
 if __name__ == "__main__":
     main()
