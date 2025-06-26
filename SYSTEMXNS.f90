@@ -36,14 +36,14 @@ MODULE SYSTEMXNS
 
   LOGICAL,PARAMETER :: STRETCH = .FALSE. ! If false the grid is uniform; if true it is uniform up to RREG and logarithmically stretched beyond
   
-  INTEGER,PARAMETER :: NR    = 5000 ! Radial mesh points
+  INTEGER,PARAMETER :: NR    = 1000 ! Radial mesh points
 !  INTEGER,PARAMETER :: NTH   = 1000 ! Angular mesh points (1 = 1D TOV solution)
-  INTEGER,PARAMETER :: NTH   = 10   ! Angular mesh points (1 = 1D TOV solution)
+  INTEGER,PARAMETER :: NTH   = 100   ! Angular mesh points (1 = 1D TOV solution)
   INTEGER,PARAMETER :: NRREG = 850       ! Points for the regular grid if stretch=.TRUE.
 
   REAL,PARAMETER :: RMIN = 0.         ! Center
 ! Outer radii in geometrized units, modified for WD
-  REAL,PARAMETER :: RMAX = 3000.       ! Outer radius for the regular grid if stretch=.FALSE.
+  REAL,PARAMETER :: RMAX = 6000.       ! Outer radius for the regular grid if stretch=.FALSE.
   REAL,PARAMETER :: RMAXSTR = 444000.0   ! Outer radius for the total grid if stretch=.TRUE.
   REAL,PARAMETER :: RREG = 3000.        ! Radius for the regular Grid if Stretch=.TRUE.
   
@@ -126,7 +126,7 @@ MODULE SYSTEMXNS
   LOGICAL        :: JCMODLAW     = .FALSE.   ! Rotation law: modified j constant A^2*omega*[(omega_c/omega)^p-1]
   LOGICAL        :: URYULAW3     = .FALSE.   ! Rotation law: Uryu with 3 Parameters
   LOGICAL        :: URYULAW4     = .FALSE.    ! Rotation law: Uryu with 4 Parameters
-  REAL           :: OMG = 0.0                ! Central Rotation rate; non-rotating
+  REAL           :: OMG = 1.e-4                 ! Central Rotation rate; non-rotating
 !  REAL           :: OMG = 2.3e-5              ! Central Rotation rate; close to breakup for near-Mch WDs
   REAL,PARAMETER :: PROTDIFF = 3./2.         ! Rotation index if URYULAW3=.true.
   REAL,PARAMETER :: A2VALUE = 0.0            ! Differential rotation coeff

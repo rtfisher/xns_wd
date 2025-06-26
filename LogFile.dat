@@ -1,8 +1,9 @@
  Log file for the XNS.f90 program
- Ran on date-time-zone: 20250625-141348.372--0400
+ Ran on date-time-zone: 20250626-105031.651--0400
   
  UNSTRETCHED GRID
- NON-ROTATING STAR
+ ROTATING STAR
+ UNIFORM ROTATION
  UNMAGNETIZED STAR
  GENERAL RELATIVITY
  =========================================INPUT========================================================
@@ -22,11 +23,11 @@
  >>>>>> Grid parameters : 
   
   STRETCH =    F
-  NR    =                      5000
-  NTH   =                        10
+  NR    =                      1000
+  NTH   =                       100
   NRREG =                       850
   RMIN  =        0.0000000000000000     
-  RMAX  =        3000.0000000000000     
+  RMAX  =        6000.0000000000000     
   RMAXSTR =      444000.00000000000     
   RREG   =       3000.0000000000000     
   REQMAX =       2500.0000000000000     
@@ -77,7 +78,7 @@
   JCMODLAW     =  F
   URYULAW3     =  F
   URYULAW4     =  F
-  OMG      =    0.0000000000000000     
+  OMG      =    1.0000000000000000E-004
   PROTDIFF =    1.5000000000000000     
   A2VALUE  =    0.0000000000000000     
   OMGMAX   =    1.0000000000000000     
@@ -108,8 +109,8 @@
   MAXSTEPTV  =                   100
   MAXSTEPCH  =                   100
   DELTMU0  =    1.0000000000000000E-004
-  MMID     =    3.6408836423872333     
-  M        =    5.8985707258328048     
+  MMID     =    5.8945068394709814     
+  M        =    10.409880892022496     
   MUIN     =    1.0000000000000000E-002
   QRELAX   =   0.29999999999999999     
   ANALYTIC =  T
@@ -133,27 +134,27 @@
   
  =========================================OUTPUT=======================================================
   
-  KOMAR   MASS (E)      =    1.3894007932626384     
-  REST    MASS          =    1.3896777877859756     
-  PROPER  MASS (E)      =    1.3910677423496922     
-  PROPER  MASS (J)      =    1.3910677423496922     
-  SCALAR  CHARGE (E)    =    0.0000000000000000     
-  ROTAT.  ENERGY (E)    =    0.0000000000000000     
-  ANGUL.  MOMENT. (E)   =    0.0000000000000000     
-  MAGNET. ENERGY (J)    =    0.0000000000000000     
-  MAGNET. E-ENERGY (E)  =    0.0000000000000000     
-  MENERGY  RATIO (J/E)  =    0.0000000000000000     
-  MENERGY  RATIO (E)    =    0.0000000000000000     
-  KENERGY  RATIO (E)    =    0.0000000000000000     
+  KOMAR   MASS (E)      =                        NaN
+  REST    MASS          =                        NaN
+  PROPER  MASS (E)      =                        NaN
+  PROPER  MASS (J)      =                        NaN
+  SCALAR  CHARGE (E)    =                        NaN
+  ROTAT.  ENERGY (E)    =                        NaN
+  ANGUL.  MOMENT. (E)   =                        NaN
+  MAGNET. ENERGY (J)    =                        NaN
+  MAGNET. E-ENERGY (E)  =                        NaN
+  MENERGY  RATIO (J/E)  =                        NaN
+  MENERGY  RATIO (E)    =                        NaN
+  KENERGY  RATIO (E)    =                        NaN
   
-  CENTRAL DENSITY (J)   =    3.2383364218728155E-009
-  EQUATORIAL RADIUS (E) =    1314.3000000000000        1940.7769900605872      KM
-  RADIUS RATIO (E)      =    1.0000000000000000     
-  CIRC RADIUS (E)       =    1315.6928397491574        1942.8337437210960      KM
-  CIRC RADIUS (J)       =    1315.6928397491574        1942.8337437210960      KM
-  CENTRAL OMG          =    0.0000000000000000     
+  CENTRAL DENSITY (J)   =    1.4584374868764616E-013
+  EQUATORIAL RADIUS (E) =    2499.0000000000000        3690.1785727470196      KM
+  RADIUS RATIO (E)      =   0.34933973589435774     
+  CIRC RADIUS (E)       =                        NaN                       NaN KM
+  CIRC RADIUS (J)       =                        NaN                       NaN KM
+  CENTRAL OMG          =    1.0000000000000000E-004
   OMGEQ                =    0.0000000000000000     
-  MAG. FLUX            =    0.0000000000000000        0.0000000000000000      Wb
+  MAG. FLUX            =                        NaN                       NaN Wb
   MAG. DIPOLE DIPM (J) =    0.0000000000000000     
   B@POLE BPOLO (J)     =    0.0000000000000000        0.0000000000000000      G
   BMAX (J)             =    0.0000000000000000        0.0000000000000000      G
@@ -162,15 +163,15 @@
   BCENT (J)            =    0.0000000000000000        0.0000000000000000      G
   E@POLE EPOLO (J)       =    0.0000000000000000     
   ELEC. CHARGE ECHRG (J) =    0.0000000000000000      VS   0.0000000000000000     
-  FLUID QUADRUPOLE (E)      =     -1930.6045167048578     
-  FLUID INTERTIA MOMENT (E) =      303981.08069140359     
-  TOTAL QUADRUPOLE (E)     =      -1930.6045167048578     
-  METRIC QUADRUPOLE (E)    =       0.0000000000000000     
-  FLUID DEF. RATE (E)	=      -6.3510680082908668E-003
-  TOTAL DEF. RATE (E)      =      -6.3510680082908668E-003
+  FLUID QUADRUPOLE (E)      =                          NaN
+  FLUID INTERTIA MOMENT (E) =                          NaN
+  TOTAL QUADRUPOLE (E)     =                           NaN
+  METRIC QUADRUPOLE (E)    =                           NaN
+  FLUID DEF. RATE (E)	=                           NaN
+  TOTAL DEF. RATE (E)      =                           NaN
   HHPOL (J) =    0.0000000000000000     
-  HHTOR (J) =    0.0000000000000000     
+  HHTOR (J) =                        NaN
   
  ======================================================================================================
   
- NUMBER OF LOOPS DONE =                    30 OUT OF                   200
+ NUMBER OF LOOPS DONE =                    11 OUT OF                   200
