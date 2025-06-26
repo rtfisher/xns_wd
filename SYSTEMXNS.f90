@@ -48,7 +48,8 @@ MODULE SYSTEMXNS
   REAL,PARAMETER :: RREG = 3000.        ! Radius for the regular Grid if Stretch=.TRUE.
   
   REAL :: REQMAX = 2500.               ! Truncation radius for equilibrium solution (to avoid explosion)
-  REAL,PARAMETER :: MINRESREG = 0.125 ! Minimum resolution of the grid (if uniform)
+  REAL, PARAMETER :: MINRESREG = 10   ! Minimum resolution of the grid (if uniform), WD value
+!  REAL,PARAMETER :: MINRESREG = 0.125 ! Minimum resolution of the grid (if uniform), NS value
   REAL,PARAMETER :: MINRESSTR = 8.D-2 ! Minimum resolution of the grid (if stretched)
   REAL,PARAMETER :: RINI = 1.E-005    ! Radius used for the expansion of the TOV equations
   
