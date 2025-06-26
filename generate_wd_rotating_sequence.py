@@ -6,7 +6,7 @@ Script: generate_wd_rotating_sequence.py
 This script automates the generation of rotating white dwarf models using the XNS code,
 constructing a sequence of fixed-mass models by incrementally increasing the rotation rate
 (Omega) from zero up to the breakup limit. The central density is iteratively adjusted using
-bisection to maintain the target gravitational mass within a tolerance.
+bisection to maintain the target rest (baryonic) mass within a tolerance.
 
 Key features:
 - Edits SYSTEMXNS.f90 to set RHOINI and Omega
