@@ -28,9 +28,9 @@ from datetime import datetime
 
 # ======================== USER CONFIGURATION ========================
 XNS_DIR = Path("/Users/rfisher1/Dropbox/Research/Programs/_xns_model_sequence")  # Default XNS directory
-N_OMEGA = 20                             # Number of Omega steps
+N_OMEGA = 100                             # Number of Omega steps
 OMEGA_MAX = 2.3e-5                       # Approximate breakup
-MASS_TOL = 0.001                         # Tolerance in mass (0.1%)
+MASS_TOL = 0.0001                         # Tolerance in mass (0.1%)
 MAX_ITER = 100                           # Max iterations for bisection
 LOG_TO_STDOUT = True                     # Whether to print log to stdout
 MODEL_DIR = Path("_model_directory")    # Output base directory
@@ -52,48 +52,63 @@ def log(msg):
 def edit_systemxns(rho_ini, omega):
     """Edit SYSTEMXNS.f90 to set RHOINI and OMG values with robust pattern matching"""
     sys_path = XNS_DIR / "SYSTEMXNS.f90"
-    
+
     # Read the file
     with open(sys_path, "r") as f:
         lines = f.readlines()
-    
+
     new_lines = []
     rhoini_updated = False
     omg_updated = False
-    
+
     for line in lines:
         stripped = line.strip()
         original_line = line
-        
+
         # More robust RHOINI pattern matching
         # Look for lines containing RHOINI that aren't comments
         if not stripped.startswith("!") and "RHOINI" in line:
-            # Try multiple possible patterns
-            if re.search(r"REAL\s*,?\s*PARAMETER\s*::\s*RHOINI", line, re.IGNORECASE):
+            # Skip lines that are entirely comments (handle inline comments too)
+            line_before_comment = line.split('!')[0].strip()
+            if not line_before_comment:  # Line is empty after removing comments
+                new_lines.append(original_line)
+                continue
+
+            # Try multiple possible patterns on the non-comment part
+            if re.search(r"REAL\s*,?\s*PARAMETER\s*::\s*RHOINI", line_before_comment, re.IGNORECASE):
                 newline = f"  REAL,PARAMETER :: RHOINI = {rho_ini:.6e} / RHO_CGS_TO_GEOM ! Central density in geom units\n"
                 rhoini_updated = True
                 log(f"DIAGNOSTIC: Updated RHOINI line: {newline.strip()}")
-            elif re.search(r"RHOINI\s*=", line):
+            elif re.search(r"RHOINI\s*=", line_before_comment):
                 # Alternative pattern: just RHOINI = ...
                 newline = f"  RHOINI = {rho_ini:.6e} / RHO_CGS_TO_GEOM ! Central density in geom units\n"
                 rhoini_updated = True
                 log(f"DIAGNOSTIC: Updated RHOINI assignment: {newline.strip()}")
             else:
                 newline = original_line
-        # More robust OMG pattern matching  
-        elif not stripped.startswith("!") and "OMG" in line and re.search(r"REAL\s*::\s*OMG", line, re.IGNORECASE):
-            newline = f"  REAL           :: OMG = {omega:.7e} ! Central Rotation rate\n"
-            omg_updated = True
-            log(f"DIAGNOSTIC: Updated OMG line: {newline.strip()}")
+        # More robust OMG pattern matching
+        elif not stripped.startswith("!") and "OMG" in line:
+            # Skip lines that are entirely comments (handle inline comments too)
+            line_before_comment = line.split('!')[0].strip()
+            if not line_before_comment:  # Line is empty after removing comments
+                new_lines.append(original_line)
+                continue
+
+            if re.search(r"REAL\s*::\s*OMG", line_before_comment, re.IGNORECASE):
+                newline = f"  REAL           :: OMG = {omega:.7e} ! Central Rotation rate\n"
+                omg_updated = True
+                log(f"DIAGNOSTIC: Updated OMG line: {newline.strip()}")
+            else:
+                newline = original_line
         else:
             newline = original_line
-            
+
         new_lines.append(newline)
-    
+
     # Write the file
     with open(sys_path, "w") as f:
         f.writelines(new_lines)
-    
+
     # Verify the updates
     if not rhoini_updated:
         log("ERROR: RHOINI line not found or updated in SYSTEMXNS.f90")
@@ -102,7 +117,7 @@ def edit_systemxns(rho_ini, omega):
             for i, line in enumerate(f, 1):
                 if "RHOINI" in line:
                     log(f"DIAGNOSTIC: Line {i}: {line.strip()}")
-    
+
     if not omg_updated:
         log("ERROR: OMG line not found or updated in SYSTEMXNS.f90")
         log("DIAGNOSTIC: Searching for OMG patterns in file:")
@@ -110,7 +125,7 @@ def edit_systemxns(rho_ini, omega):
             for i, line in enumerate(f, 1):
                 if "OMG" in line and "REAL" in line:
                     log(f"DIAGNOSTIC: Line {i}: {line.strip()}")
-    
+
     log(f"DIAGNOSTIC: File edit complete. RHOINI updated: {rhoini_updated}, OMG updated: {omg_updated}")
 
 def compile_xns():
